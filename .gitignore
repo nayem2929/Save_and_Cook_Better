@@ -1,0 +1,17 @@
+# Compiled binaries & objects
+*.exe
+*.o
+*.obj
+preprocess
+main
+
+# Data files (keep raw & clean CSVs out of git)
+*.csv
+
+# VS Code / IDE configs
+.vscode/
+.idea/
+
+# OS artifacts
+Thumbs.db
+.DS_Store
