@@ -1,47 +1,49 @@
 #pragma once
 #include <vector>
 // #include <utility>
-#include "Recipe.h"
+#include "recipe.h"
+
+using namespace std;
 
 // Threshold for switching to Insertion Sort (typically between 10 and 20)
 constexpr int INSERTION_THRESHOLD = 16;
 
 // In-place Insertion Sort on slice arr[left..right]
-inline void insertionSort(std::vector<Recipe>& arr, int left, int right) {
+void insertionSort(vector<Recipe>& arr, int left, int right) {
     for (int i = left + 1; i <= right; ++i) {
-        Recipe key = std::move(arr[i]);
+        Recipe key = arr[i];
         int j = i - 1;
         // Sort descending by score
-        while (j >= left && arr[j].score < key.score) {
-            arr[j + 1] = std::move(arr[j]);
+        while (j >= left && recipeRanksHigher(key, arr[j])) {
+            arr[j + 1] = arr[j];
             j--;
         }
-        arr[j + 1] = std::move(key);
+        arr[j + 1] = key;
     }
 }
 
-inline void merge(std::vector<Recipe>& arr, std::vector<Recipe>& temp, int left, int mid, int right) {
+void merge(vector<Recipe>& arr, vector<Recipe>& temp, int left, int mid, int right) {
     int i = left;
     int j = mid + 1;
     int k = left;
 
     while (i <= mid && j <= right) {
-        if (arr[i].score >= arr[j].score) {
-            temp[k++] = std::move(arr[i++]);
+        if (recipeRanksHigher(arr[i], arr[j])) {
+            temp[k++] = arr[i++];
         } else {
-            temp[k++] = std::move(arr[j++]);
+            temp[k++] = arr[j++];
         }
     }
 
-    while (i <= mid) temp[k++] = std::move(arr[i++]);
-    while (j <= right) temp[k++] = std::move(arr[j++]);
+    while (i <= mid) temp[k++] = arr[i++];
+    while (j <= right) temp[k++] = arr[j++];
 
     for (int idx = left; idx <= right; idx++) {
-        arr[idx] = std::move(temp[idx]);
+        arr[idx] = temp[idx];
     }
 }
 
-inline void hybridMergeSortHelper(std::vector<Recipe>& arr, std::vector<Recipe>& temp, int left, int right) {
+void hybridMergeSortHelper(vector<Recipe>& arr, vector<Recipe>& temp, int left, int right) {
     // Switch to Insertion Sort when the partition becomes small enough
     if (right - left + 1 <= INSERTION_THRESHOLD) {
         insertionSort(arr, left, right);
@@ -54,10 +56,15 @@ inline void hybridMergeSortHelper(std::vector<Recipe>& arr, std::vector<Recipe>&
     merge(arr, temp, left, mid, right);
 }
 
-inline void runMergeSort(std::vector<Recipe>& arr) {
+void runMergeSort(vector<Recipe>& arr) {
     if (arr.size() <= 1) return;
-    std::vector<Recipe> temp(arr.size());
+    vector<Recipe> temp(arr.size());
     hybridMergeSortHelper(arr, temp, 0, static_cast<int>(arr.size()) - 1);
+}
+
+// Merge sort allocates one temporary Recipe vector alongside its input vector.
+int mergeSortWorkingMemoryBytes(int recipeCount) {
+    return recipeCount * sizeof(Recipe);
 }
 
 /**
