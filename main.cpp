@@ -151,7 +151,7 @@ int main() {
         cout << "1. Find Best # of recipes (Current: " << topK << ")\n";
         cout << "2. Choose Max ingredient # (Current: " << maxIngredients << ")\n";
         cout << "3. Choose Meal Type (Current: "
-                  << (weekdayMeal ? "Weekday" : "Complex") << ")\n";
+                  << (weekdayMeal ? "Simple" : "Complex") << ")\n";
         cout << "4. Compare Algorithm Performance\n";
         cout << "5. Quit Program\n";
         cout << "Please choose an option: ";
@@ -184,7 +184,7 @@ int main() {
             cin >> maxIngredients;
         } else if (choice == 3) {
             int mealChoice;
-            cout << "1. Weekday meal (fewer minutes, ingredients, and steps)\n";
+            cout << "1. Simple meal (fewer minutes, ingredients, and steps)\n";
             cout << "2. Complex meal (more ingredients and steps)\n";
             cout << "Choose a meal type: ";
 
