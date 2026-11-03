@@ -113,6 +113,25 @@ void printRecipes(const vector<Recipe>& recipes, int count) {
     cout << endl;
 }
 
+bool isTopRecipesSame(const vector<Recipe>& mergeList, const vector<Recipe>& heapList, int topK) {
+    int requiredNum = mergeList.size();
+
+    if(requiredNum > topK) {
+        requiredNum = topK;
+    }
+
+    if (heapList.size() != requiredNum) {
+        return false;
+    }
+
+    for (int i = 0; i < requiredNum; i++) {
+        if(mergeList[i].id != heapList[i].id) {
+            return false;
+        }
+    }
+    return true;
+}
+
 int main() {
     cout << "Loading dataset..." << endl;
     vector<Recipe> all_recipes = loadDataset("cleaned_recipes.csv");
@@ -123,6 +142,8 @@ int main() {
     int maxIngredients = 100;
     bool weekdayMeal = true;
 
+    
+
     while (choice != 5) {
         cout << "=============================\n";
         cout << "    Save & Cook Better!      \n";
@@ -131,7 +152,7 @@ int main() {
         cout << "2. Choose Max ingredient # (Current: " << maxIngredients << ")\n";
         cout << "3. Choose Meal Type (Current: "
                   << (weekdayMeal ? "Weekday" : "Complex") << ")\n";
-        cout << "4. Compare Alg. Performance\n";
+        cout << "4. Compare Algorithm Performance\n";
         cout << "5. Quit Program\n";
         cout << "Please choose an option: ";
         
@@ -139,6 +160,12 @@ int main() {
             cin.clear();
             string discard;
             cin >> discard;
+            continue;
+        }
+
+        if (choice < 1 || choice > 5) {
+            cout << "\n";
+            cout << "Invalid output, please try again" << endl;
             continue;
         }
 
@@ -180,9 +207,43 @@ int main() {
                 }
             }
 
-            cout << "\nFiltering complete: " << filtered.size() << " eligible recipes.\n";
-            vector<Recipe> mergeList = filtered; //copy to run sorting on
+            cout << "\nFiltering complete: " << filtered.size() << " eligible recipes\n";
+
+            int datasetSize;
+            cout << "How many recipes should be compared?" << endl;
+            cout << "Choose a size (100, 1000, etc.) or select 0 to use all expected recipes: " << endl;
+            //cin >> datasetSize;
+
+            if (!(cin >> datasetSize)) {
+                cout << "Invalid input, please enter an actual number" << endl;
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                continue;
+            }
+
+            if(datasetSize < 0) {
+                cout << "Invalid size, please enter a positive number" << endl;
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                continue;
+            }
+
+            if(datasetSize > filtered.size()) {
+                cout << "Requested size is greater than the number of eligible recipes, using all recipes instead." << endl;
+                datasetSize = filtered.size();
+            }
+
+            if (datasetSize > 0) {
+                filtered.resize(datasetSize);
+            }
+
+            cout << "Using " << filtered.size() << " recipes for comparison." << endl;
+
+
+
+            vector<Recipe> mergeList = filtered; //copy of merge list to run sorting on
             cout << "Running Merge Sort vs Min-Heap...\n";
+            cout << "\n";
 
             // 3. Benchmark Merge Sort
             cout << "Running Merge Sort on " << mergeList.size() << " recipes...\n";
@@ -193,7 +254,9 @@ int main() {
             auto end = chrono::high_resolution_clock::now();
             chrono::duration<double, milli> mergeDuration = end - start;
 
-            cout << "Merge Sort completed in: " << mergeDuration.count() << " ms\n";
+            //cout << "Merge Sort completed in: " << mergeDuration.count() << " ms\n";
+            cout << fixed << setprecision(8) << "Merge Sort completed in: " << mergeDuration.count() << " ms\n";
+            
             printMemory(mergeSortWorkingMemoryBytes(mergeList.size()));
 
             // 4. Display top-k from the sorted list
@@ -208,13 +271,39 @@ int main() {
             end = chrono::high_resolution_clock::now();
             chrono::duration<double, milli> heapDuration = end - start;
 
-            cout << "Min-Heap completed in: " << heapDuration.count() << " ms\n";
+            //cout << "Min-Heap completed in: " << heapDuration.count() << " ms\n";
+            cout << fixed << setprecision(8) << "Min Heap completed in " << heapDuration.count() << " ms\n";
+
+
             printMemory(minHeapWorkingMemoryBytes(filtered.size(), topK));
             cout << "\nTop " << topK << " Recipes via Min-Heap:";
             printRecipes(heapList, topK);
+
+            double mergeTime = mergeDuration.count();
+            double heapTime = heapDuration.count();
+
+            if ((isTopRecipesSame(mergeList, heapList, topK)) == true) {
+                cout << "Both algorithms provide same best number of recipes" << endl;
+            } else {
+                cout << "The algorithms do not provide the same best number of recipes" << endl;
+            }
+
+            if (mergeTime == 0 || heapTime == 0) {
+                cout << "Speedup time is invalid b/c a runtime was zero";
+            } else if (mergeTime > heapTime) {
+                double heap_faster = mergeTime / heapTime;
+                cout << "Min Heap was " << heap_faster << " times faster than Merge Sort" << endl;
+            } else if (heapTime > mergeTime) {
+                double merge_faster = heapTime / mergeTime;
+                cout << "Merge Sort was " << merge_faster << " times faster than Min Heap" << endl;
+            } else {
+                cout << "Both algorithms have the same runtime";
+            }
+
+
         }
         }
 
-    cout << "Exiting program. Goodbye!\n";
+    cout << "Quitting program.\n";
     return 0;
 }

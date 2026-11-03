@@ -1,9 +1,27 @@
 ## README ##
-Welcome to the project!
-Getting Started & Setup: 
-- After cloning the repository, download RAW_interactions.csv and RAW_recipes.csv and place them in the root project folder.
-- Run preprocessor.py
-Note: This script generates cleaned_recipes.csv so the C++ program doesn't have to re-parse all 230k lines on every run.
+
+This program compares the result of merge sort and min-heap on a recipe dataset to find recipes based on the ingredient count.
+
+Dataset Setup: 
+1. After cloning the repository, download RAW_interactions.csv and RAW_recipes.csv from https://www.kaggle.com/datasets/shuyangli94/food-com-recipes-and-user-interactions?resource=download
+and place them in the root project folder.
+2. Run preprocessor.py to create the cleaned_recipes.csv
+
+### Build and run
+
+```bash
+g++ -std=c++17 -O2 main.cpp -o save_and_cook
+./save_and_cook
+```
+
+## Menu
+Menu Explained:
+1: Option 1 sets the number of top (best) recipes (k value)
+2: Option 2 sets the maximum ingredient count
+3: Option 3 chooses the meal tyoe
+4: Option 4 compares the algorithm performance
+5: Quits the program
+
 - Scoring Logic & Proposed Features
   - Current Implementation: The formula is kept simple for now, it rewards recipes with low ingredient counts and high ratings.
 - Proposed Enhancement: Add an option for users to choose between two meal types: Weekday Meal: Low preparation time (minutes), low ingredient count, few steps, high rating. Weeknight / Complex Meal: High rating, higher number of ingredients, and more steps (reflecting the complexity of the dish)
@@ -22,12 +40,6 @@ Note: This script generates cleaned_recipes.csv so the C++ program doesn't have 
 -Memory Counter: A memory counter still needs to be implemented. If one of you can add tracking for memory usage, that would be greatly appreciated!
   - Implemented: Option 3 now prints each algorithm's estimated additional working memory. The number is the vector storage allocated by the algorithm itself: one `Recipe` slot per eligible recipe for merge sort and at most `topK` `Recipe` slots for the min-heap. It intentionally excludes the already-loaded dataset and recipe-name allocations shared with the input data.
 
-### Build and run
-
-```bash
-g++ -std=c++17 -O2 main.cpp -o save_and_cook
-./save_and_cook
-```
 
 
-Sorry for the delay getting this set up, and again, please let me know if anything is unclear!
+
