@@ -152,7 +152,7 @@ int main() {
         cout << "2. Choose Max ingredient # (Current: " << maxIngredients << ")\n";
         cout << "3. Choose Meal Type (Current: "
                   << (weekdayMeal ? "Simple" : "Complex") << ")\n";
-        cout << "4. Compare Algorithm Performance\n";
+        cout << "4. Find Recipes and Compare Performance\n";
         cout << "5. Quit Program\n";
         cout << "Please choose an option: ";
         
