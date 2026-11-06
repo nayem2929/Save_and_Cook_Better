@@ -2,20 +2,23 @@
 
 This program compares the result of merge sort and min-heap on a recipe dataset to find the top K recipes based on ratings, specific meal type (either simple or complex), and prearation time.
 
-## Dataset Setup
+## Dataset Setup: 
 1. After cloning the repository, download RAW_interactions.csv and RAW_recipes.csv from https://www.kaggle.com/datasets/shuyangli94/food-com-recipes-and-user-interactions?resource=download
 and place them in the root project folder.
 2. Run preprocessor.py to create the cleaned_recipes.csv
 
 ## Build and run
-bash:
+bash
+```
 g++ -std=c++17 -O2 main.cpp -o save_and_cook
 ./save_and_cook
+```
 
 powershell:
+```
 g++ -std=c++17 -O2 main.cpp -o save_and_cook.exe
 .\save_and_cook.exe
-
+```
 
 ## Menu
 Menu Explained:
