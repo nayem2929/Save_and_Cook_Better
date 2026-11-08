@@ -192,7 +192,7 @@ int main() {
                 weekdayMeal = mealChoice == 1;
                 updateScores(all_recipes, weekdayMeal);
                 cout << "Scores updated for "
-                          << (weekdayMeal ? "weekday meals.\n" : "complex meals.\n");
+                          << (weekdayMeal ? "simple meals.\n" : "complex meals.\n");
             } else {
                 cin.clear();
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
